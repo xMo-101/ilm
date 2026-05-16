@@ -1,4 +1,4 @@
-#import "@preview/ilm:2.0.0": *
+#import "../lib.typ": *
 
 #set text(lang: "en")
 
@@ -7,11 +7,12 @@
   authors: "Max Mustermann",
   date: datetime(year: 2024, month: 03, day: 19),
   abstract: [
-    'Ilm (Urdu: #text(lang: "ur", font: ("Noto Nastaliq Urdu", "Noto Naskh Arabic"), size: 0.8em)[عِلْم]) is the Urdu term for knowledge. In its general usage, 'ilm may refer to knowledge of any specific thing or any form of "learning". Subsequently, the term came to be used to refer to various categories of "sciences", especially when used in its plural form ('ulum).
+    'Ilm (Urdu: #text(lang: "ur", font: ("Noto Nastaliq Urdu", "Noto Naskh Arabic"), size: 0.8em)[عِلْم]) is the Urdu term for knowledge. In its general usage, 'ilm may refer to _knowledge_ of any specific thing or any form of _learning_. Subsequently, the term is also used to refer to various categories of sciences, especially when used in its plural form ('ulum).
   ],
   preface: [
     #align(center + horizon)[
-      Thank you for using this template #emoji.heart,\ I hope you like it #emoji.face.smile
+      Thank you for using this template #emoji.heart \
+      I hope you like it #emoji.face.smile
     ]
   ],
   bibliography: bibliography("refs.bib"),
@@ -372,29 +373,27 @@ For comparison, this is how the same table would look with Typst's default styli
 
 = Code
 == Custom font and size
-'Ilm uses the _Iosevka_@wikipedia_iosevka font for raw text instead of the default _Fira Mono_. If Iosevka is not installed then the template will fall back to Fira Mono.
-
-#let snip(cap) = figure(caption: cap)[
-  ```rust
-  fn main() {
-      let user = ("Adrian", 38);
-      println!("User {} is {} years old", user.0, user.1);
-
-      // tuples within tuples
-      let employee = (("Adrian", 38), "die Mobiliar");
-      println!("User {} is {} years old and works for {}", employee.0.1, employee.0.1, employee.1);
-  }
-  ```
-]
+'Ilm uses the Iosevka @wikipedia_iosevka font for raw text instead of the default DejaVu Sans Mono. If Iosevka is not available then the template will fall back to DejaVu Sans Mono.
 
 #[
-  #show raw: set text(font: "Fira Mono")
-  For comparison, here is what `code` in Fira Mono looks like:
-  #snip("Code snippet typeset in Fira Mono font")
-]
+  #let snip(cap) = figure(caption: cap)[
+    ```rust
+    fn main() {
+        let user = ("Adrian", 38);
+        println!("User {} is {} years old", user.0, user.1);
 
-#[
-  #show raw: set text(font: ("Iosevka", "Fira Mono"))
+        // tuples within tuples
+        let employee = (("Adrian", 38), "die Mobiliar");
+        println!("User {} is {} years old and works for {}", employee.0.1, employee.0.1, employee.1);
+    }
+    ```
+  ]
+
+  #show raw: set text(font: "DejaVu Sans Mono")
+  For comparison, here is what `code` in DejaVu Sans Mono looks like:
+  #snip("Code snippet typeset in DejaVu Sans Mono font")
+
+  #show raw: set text(font: ("Iosevka", "DejaVu Sans Mono"))
   and here is how the same `code` looks in Iosevka:
   #snip("Code snippet typeset in Iosevka font")
 ]

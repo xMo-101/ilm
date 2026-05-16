@@ -1,3 +1,8 @@
+// ══════════ Constants ══════════
+#let stroke-color = luma(200)
+#let fill-color = luma(250)
+
+// ══════════ std scoping ══════════
 // Workaround for the lack of an `std` scope.
 #let std-bibliography = bibliography
 #let std-smallcaps = smallcaps
@@ -8,8 +13,10 @@
 #let smallcaps(body) = std-smallcaps(text(tracking: 0.6pt, body))
 #let upper(body) = std-upper(text(tracking: 0.6pt, body))
 
-// Helper to extract raw text customizations.
-// TODO: Remove backwards compatibility for `use-typst-defaults`, `custom-font`, and `custom-size` in future version
+// ══════════ Helper Functions ══════════
+// Extract raw text customizations.
+// TODO: Remove backwards compatibility for `use-typst-defaults`, `custom-font`, and
+// `custom-size` in future version.
 #let _get-raw-text-args(raw-text) = {
   let use-defaults = (
     (type(raw-text) == str and raw-text == "use-typst-default")
@@ -22,16 +29,96 @@
 
   let raw-font = raw-text.at("font", default: raw-text.at("custom-font", default: (
     "Iosevka",
-    "Fira Mono",
+    "DejaVu Sans Mono",
   )))
   let raw-size = raw-text.at("size", default: raw-text.at("custom-size", default: 9pt))
 
   (font: raw-font, size: raw-size)
 }
 
-// Colors used across the template.
-#let stroke-color = luma(200)
-#let fill-color = luma(250)
+// Normalize the authors parameter.
+// Handles the deprecated `author` parameter and normalizes to an array.
+#let _normalize-authors(authors, author) = {
+  if authors != none {
+    if type(authors) == str {
+      (authors,)
+    } else {
+      authors
+    }
+  } else {
+    (author,)
+  }
+}
+
+// Render the footer content based on the footer style.
+#let _render-footer(footer) = context {
+  // Get current page number.
+  let i = counter(page).at(here()).first()
+
+  // Only get chapter info if needed.
+  let chapter = none
+  let on-chapter-page = false
+
+  if footer.ends-with("with-chapter") {
+    // Are we on a page that starts a chapter?
+    let target = heading.where(level: 1)
+    on-chapter-page = query(target).any(it => it.location().page() == i)
+
+    // Find the chapter of the section we are currently in.
+    if not on-chapter-page {
+      let before = query(target.before(here()))
+      if before.len() > 0 {
+        let current = before.last()
+        if current.numbering != none {
+          chapter = upper(text(size: 0.68em, current.body))
+        }
+      }
+    }
+  }
+
+    let gap = 1.75em
+
+  // Apply footer style.
+  if footer == "page-number-alternate-with-chapter" {
+    let is-odd = calc.odd(i)
+    let aln = if is-odd { right } else { left }
+
+    if chapter != none {
+      if is-odd {
+        align(aln)[#chapter #h(gap) #i]
+      } else {
+        align(aln)[#i #h(gap) #chapter]
+      }
+    } else {
+      align(aln)[#i]
+    }
+  } else if footer == "page-number-left-with-chapter" {
+    if chapter != none {
+      align(left)[#i #h(gap) #chapter]
+    } else {
+      align(left)[#i]
+    }
+  } else if footer == "page-number-right-with-chapter" {
+    if chapter != none {
+      align(right)[#chapter #h(gap) #i]
+    } else {
+      align(right)[#i]
+    }
+  } else if footer == "page-number-center" {
+    align(center)[#i]
+  } else if footer == "page-number-left" {
+    align(left)[#i]
+  } else if footer == "page-number-right" {
+    align(right)[#i]
+  } else {
+    // Fallback to default behavior.
+    let is-odd = calc.odd(i)
+    let aln = if is-odd { right } else { left }
+    align(aln)[#i]
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // This function gets your whole document as its `body`.
 #let ilm(
@@ -61,8 +148,8 @@
   date-format: "[month repr:long] [day padding:zero], [year repr:full]",
   // An abstract for your work. Can be omitted if you don't have one.
   abstract: none,
-  // The contents for the preface page. This will be displayed after the cover page. Can
-  // be omitted if you don't have one.
+  // The contents for the preface page. This will be displayed after the cover page.
+  // Can be omitted if you don't have one.
   preface: none,
   // The result of a call to the `outline` function or `none`.
   // Set this to `none`, if you want to disable the table of contents.
@@ -97,7 +184,7 @@
   // Set to "use-typst-default" to use Typst's default raw text styling,
   // or provide a dictionary to customize font and size.
   raw-text: (
-    font: ("Iosevka", "Fira Mono"),
+    font: ("Iosevka", "DejaVu Sans Mono"),
     size: 9pt,
   ),
   // Display an index of figures (images).
@@ -120,15 +207,7 @@
 ) = {
   // Determine the final authors to use (new `authors` parameter takes precedence over
   // deprecated `author`). Normalize to array for simpler processing.
-  let final-authors = if authors != none {
-    if type(authors) == str {
-      (authors,)
-    } else {
-      authors
-    }
-  } else {
-    (author,)
-  }
+  let final-authors = _normalize-authors(authors, author)
 
   // Set the document's metadata.
   set document(title: title, author: final-authors.join(", "))
@@ -198,9 +277,12 @@
   }
 
   // Configure paragraph properties.
-  // Default leading is 0.65em.
-  // Default spacing is 1.2em.
-  set par(leading: 0.7em, spacing: 1.35em, justify: true, linebreaks: "optimized")
+  set par(
+    leading: 0.7em, // (default: 0.65em)
+    spacing: 1.35em, // (default: 1.2em)
+    justify: true,
+    linebreaks: "optimized",
+  )
 
   // Add vertical space after headings.
   show heading: it => {
@@ -232,76 +314,9 @@
     table-of-contents
   }
 
-  // Configure page numbering and footer.
+  // Configure footer (which includes page numbering).
   set page(
-    footer: if footer != none {
-      context {
-        // Get current page number.
-        let i = counter(page).at(here()).first()
-
-        // Only get chapter info if needed
-        let chapter = none
-        let on-chapter-page = false
-
-        if footer.ends-with("with-chapter") {
-          // Are we on a page that starts a chapter?
-          let target = heading.where(level: 1)
-          on-chapter-page = query(target).any(it => it.location().page() == i)
-
-          // Find the chapter of the section we are currently in.
-          if not on-chapter-page {
-            let before = query(target.before(here()))
-            if before.len() > 0 {
-              let current = before.last()
-              if current.numbering != none {
-                chapter = upper(text(size: 0.68em, current.body))
-              }
-            }
-          }
-        }
-
-        let gap = 1.75em
-
-        // Apply footer style
-        if footer == "page-number-alternate-with-chapter" {
-          let is-odd = calc.odd(i)
-          let aln = if is-odd { right } else { left }
-
-          if chapter != none {
-            if is-odd {
-              align(aln)[#chapter #h(gap) #i]
-            } else {
-              align(aln)[#i #h(gap) #chapter]
-            }
-          } else {
-            align(aln)[#i]
-          }
-        } else if footer == "page-number-left-with-chapter" {
-          if chapter != none {
-            align(left)[#i #h(gap) #chapter]
-          } else {
-            align(left)[#i]
-          }
-        } else if footer == "page-number-right-with-chapter" {
-          if chapter != none {
-            align(right)[#chapter #h(gap) #i]
-          } else {
-            align(right)[#i]
-          }
-        } else if footer == "page-number-center" {
-          align(center)[#i]
-        } else if footer == "page-number-left" {
-          align(left)[#i]
-        } else if footer == "page-number-right" {
-          align(right)[#i]
-        } else {
-          // Fallback to default behavior
-          let is-odd = calc.odd(i)
-          let aln = if is-odd { right } else { left }
-          align(aln)[#i]
-        }
-      }
-    },
+    footer: if footer != none { _render-footer(footer) },
   )
 
   // Configure equation numbering.
@@ -320,9 +335,9 @@
 
   // Break large tables across pages.
   show figure.where(kind: table): set block(breakable: true)
+  // Configure cell formatting.
   set table(
-    // Increase the table cell's padding
-    inset: 7pt, // default is 5pt
+    inset: 7pt, // increase cell padding (default: 5pt)
     stroke: (0.5pt + stroke-color),
   )
   // Use smallcaps for table header row.
