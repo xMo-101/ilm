@@ -1,4 +1,4 @@
-#import "../lib.typ": *
+#import "@preview/ilm:2.1.0": *
 
 #set text(lang: "en")
 
