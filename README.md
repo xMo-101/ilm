@@ -53,92 +53,92 @@ can add a show rule like this at the top of your file:
 
 This template exports the `ilm` function with the following named arguments:
 
-- `cover-page`
+- `cover-page`\
   type: [string], [content], or `none`\
   default: `"use-ilm-default"`\
   description: Cover page customization. Set to `"use-ilm-default"` for the default cover page, `none` to skip the cover page, or provide custom content to create your own cover page.
 
-- `title`
+- `title`\
   type: [content]\
   default: `Your Title`\
   description: The title for your work.
 
-- `authors`
+- `authors`\
   type: [string] or [array]\
   default: `none`\
   description: The author(s) of your work. Can be a string for a single author or an array of strings for multiple authors. Multiple authors will be displayed on separate lines with font size automatically scaled.
 
-- `paper-size`
+- `paper-size`\
   type: [string]\
   default: `a4`\
   description: Specify a [paper size string] to change the page size.
 
-- `date`
+- `date`\
   type: [datetime] or `none`\
   default: `datetime.today()`\
   description: The date that will be displayed on the cover page. Set to `none` to disable date.
 
-- `date-format`
+- `date-format`\
   type: [string]\
   default: `[month repr:long] [day padding:zero], [year repr:full]`\
   description: The format for the date that will be displayed on the cover page. By default, the date will be displayed as `MMMM DD, YYYY`.
 
-- `abstract`
+- `abstract`\
   type: [content] or `none`\
   default: `none`\
   description: A brief summary/description of your work. This is shown on the cover page. Set to `none` to disable.
 
-- `preface`
+- `preface`\
   type: [content]\
   default: `none`\
   description: The preface for your work. The preface content is shown on its own separate page after the cover.
 
-- `chapter-pagebreak`
+- `chapter-pagebreak`\
   type: [bool]\
   default: `true`\
   description: Setting this to `false` will prevent chapters from starting on a new page.
 
-- `external-link-circle`
+- `external-link-circle`\
   type: [bool]\
   default: `true`\
   description: Setting this to `false` will disable the maroon circle that is shown next to external links.
 
-- `footer`
+- `footer`\
   type: [string] or `none`\
   default: `"page-number-alternate-with-chapter"`\
   description: Footer style for page numbering. Set to `none` to disable footer entirely. Available styles: `"page-number-alternate-with-chapter"` (alternating sides with chapter name), `"page-number-left-with-chapter"`, `"page-number-right-with-chapter"`, `"page-number-center"`, `"page-number-left"`, `"page-number-right"`.
 
-- `raw-text`
+- `raw-text`\
   type: [string] or [dictionary]\
   default: `(font: ("Iosevka", "DejaVu Sans Mono"), size: 9pt)`\
   description: Customize raw text (code) styling. Set to `"use-typst-default"` to use Typst's default formatting, or provide a dictionary with `font` and `size` keys to customize.
 
-- `table-of-contents`
+- `table-of-contents`\
   type: [content]\
   default: `outline()`\
   description: The result of a call to the [outline function][outline] or none. Setting this to `none` will disable the table of contents.
 
-- `appendix`
+- `appendix`\
   type: [dictionary]\
   default: `(enabled: false, title: "Appendix", heading-numbering-format: "A.1.1.", body: none)`\
   description: Setting `enabled` to `true` and defining your content in `body` will display the appendix after the main body of your document and before the bibliography.
 
-- `bibliography`
+- `bibliography`\
   type: [content]\
   default: `none`\
   description: The result of a call to the [bibliography function][bibliography] or none. Specifying this will configure numeric, IEEE-style citations.
 
-- `figure-index`
+- `figure-index`\
   type: [dictionary]\
   default: `(enabled: false, title: "Index of Figures")`\
   description: Setting this to `true` will display an index of image figures at the end of the document.
 
-- `table-index`
+- `table-index`\
   type: [dictionary]\
   default: `(enabled: false, title: "Index of Tables")`\
   description: Setting this to `true` will display an index of table figures at the end of the document.
 
-- `listing-index`
+- `listing-index`\
   type: [dictionary]\
   default: `(enabled: false, title: "Index of Listings")`\
   description: Setting this to `true` will display an index of listing (code block) figures at the end of the document. |
