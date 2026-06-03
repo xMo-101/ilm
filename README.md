@@ -10,7 +10,7 @@ images, tables, code blocks.
 
 Dynamic running footer contains the title of the chapter (top-level heading).
 
-See the [example.pdf](https://github.com/talal/ilm/blob/main/example.pdf) file to see how it looks.
+See the [example.pdf](https://github.com/talal/ilm/blob/v2.1.1/example.pdf) file to see how it looks.
 
 ## Usage
 
@@ -59,7 +59,7 @@ The template exports the `ilm` function with several named arguments (read: opti
 
 ### Options
 
-The list below shows a _brief description_ for each option. For a detailed explanation of these options, see the [example.pdf](https://github.com/talal/ilm/blob/main/example.pdf) file.
+The list below shows a _brief description_ for each option. For a detailed explanation of these options, see the [example.pdf](https://github.com/talal/ilm/blob/v2.1.1/example.pdf) file.
 
 - `cover-page`\
   type: [string], [content], or `none`\
