@@ -307,8 +307,40 @@
     inset: 7pt, // increase cell padding (default: 5pt)
     stroke: (0.5pt + stroke-color),
   )
-  // Use smallcaps for table header row.
-  show table.cell.where(y: 0): smallcaps
+
+  // table header formatting:
+  let format-header-cell(h) = {
+    if h.has("label") and h.label == <done> {
+      return h
+    }
+
+    let fields = h.fields()
+    let body = fields.remove("body")
+    if "label" in fields {
+      let _ = fields.remove("label")
+    }
+
+    [#table.cell(..fields, smallcaps(body))<done>]
+  }
+
+  // show smallcaps on a top-header
+  show <top-header>: t => {
+    show table.cell.where(y: 0): format-header-cell
+    t
+  }
+
+  // show smallcaps on a side-header
+  show <side-header>: t => {
+    show table.cell.where(x: 0): format-header-cell
+    t
+  }
+
+  // show smallcaps on both side and top headers
+  show <top-side-header>: t => {
+    show table.cell.where(x: 0): format-header-cell
+    show table.cell.where(y: 0): format-header-cell
+    t
+  }
 
   // Wrap `body` in curly braces so that it has its own context. This way show/set rules
   // will only apply to body.
