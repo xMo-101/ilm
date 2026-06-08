@@ -340,7 +340,8 @@ If you prefer Typst's default spacing then you can still use it by prefixing `st
 ```
 
 == Tables
-In order to increase the focus on table content, we minimize the table's borders by using thin gray lines instead of thick black ones. Additionally, we use small caps for the header row. Take a look at the table below:
+In order to increase the focus on table content, we minimize the table's borders by using thin gray lines instead of thick black ones.
+Take a look at the table below:
 
 #let unit(u) = math.display(math.upright(u))
 #let si-table = table(
@@ -356,6 +357,33 @@ In order to increase the focus on table content, we minimize the table's borders
 )
 
 #figure(caption: ['Ilm's styling], si-table)
+
+Now, to additionally format the header of the table, you can use
+one of the following tags: `<top-header>`, `side-header` and `top-side-header`>
+
+Here's an example of the table with the `top-header` tag, which
+marks the first row of the table as a header.
+
+#figure(caption: ['Ilm's table headers], si-table)<top-header>
+
+These header-tags can be used in the following ways:
+#grid(columns: (1fr, 1fr))[
+```typst
+#table(
+  // ...
+  // ...
+  // ...
+)<top-header>
+```
+][
+  ```typst
+  #let mytable = table(/* ... */)
+  #figure(
+    caption: [My caption],
+    mytable
+  )<top-side-header>
+  ```
+]
 
 For comparison, this is how the same table would look with Typst's default styling:
 
